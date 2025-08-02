@@ -53,11 +53,11 @@ const navbar = (
         <Image
           src={logo}
           alt="Trade Signal"
-          width={20}
-          height={20}
+          width={24}
+          height={24}
           className="sm:w-6 sm:h-6"
         />
-        <span className="ml-1 sm:ml-2 font-bold text-sm sm:text-base">
+        <span className="ml-2 sm:ml-2 font-bold text-base sm:text-lg">
           Trade Signal
         </span>
       </>
