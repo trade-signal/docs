@@ -1,0 +1,184 @@
+---
+title: 股票接口 - A股
+description: Signal Feed 股票数据 API 接口文档 - A股
+---
+
+## 股票接口
+
+Signal Feed 提供完整的 A 股股票数据接口，支持实时行情、历史数据等。
+
+### 获取股票列表
+
+获取所有 A 股股票的基本信息列表。
+
+**请求**
+
+```http
+GET /stocks/list
+```
+
+**参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `market` | string | 否 | 市场类型：`sh`(上海)、`sz`(深圳)、`all`(全部) |
+| `page` | integer | 否 | 页码，默认 1 |
+| `limit` | integer | 否 | 每页数量，默认 20，最大 100 |
+
+**示例**
+
+```bash
+curl -X GET "http://localhost:3000/v1/stocks/list?market=sh&page=1&limit=10" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": {
+    "list": [
+      {
+        "code": "000001",
+        "name": "平安银行",
+        "market": "sz",
+        "industry": "银行",
+        "status": "active"
+      }
+    ],
+    "total": 100,
+    "page": 1,
+    "limit": 10
+  }
+}
+```
+
+### 获取股票详情
+
+获取指定股票的详细信息。
+
+**请求**
+
+```http
+GET /stocks/{code}/detail
+```
+
+**路径参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `code` | string | 是 | 股票代码，如：000001 |
+
+**示例**
+
+```bash
+curl -X GET "http://localhost:3000/v1/stocks/000001/detail" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": {
+    "code": "000001",
+    "name": "平安银行",
+    "market": "sz",
+    "industry": "银行",
+    "current_price": 12.34,
+    "change": 0.15,
+    "change_percent": 1.23,
+    "volume": 1234567,
+    "turnover": 15234567.89,
+    "market_cap": 1234567890.12,
+    "pe_ratio": 15.67,
+    "pb_ratio": 1.23,
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+### 获取股票实时行情
+
+获取指定股票的实时价格数据。
+
+**请求**
+
+```http
+GET /stocks/{code}/quote
+```
+
+**参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `code` | string | 是 | 股票代码 |
+| `fields` | string | 否 | 返回字段，多个用逗号分隔 |
+
+**示例**
+
+```bash
+curl -X GET "http://localhost:3000/v1/stocks/000001/quote?fields=price,volume,turnover" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## 使用示例
+
+### Node.js
+
+```javascript
+// 配置你的 API 地址
+const API_KEY = 'your_api_key';
+const BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000/v1';
+
+// 获取股票列表
+async function getStockList(market = 'all', page = 1, limit = 20) {
+  const params = new URLSearchParams({
+    market,
+    page: page.toString(),
+    limit: limit.toString()
+  });
+  
+  const response = await fetch(`${BASE_URL}/stocks/list?${params}`, {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`
+    }
+  });
+  return response.json();
+}
+
+// 获取股票详情
+async function getStockDetail(code) {
+  const response = await fetch(`${BASE_URL}/stocks/${code}/detail`, {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`
+    }
+  });
+  return response.json();
+}
+
+// 获取股票实时行情
+async function getStockQuote(code, fields) {
+  const params = new URLSearchParams();
+  if (fields) {
+    params.append('fields', fields);
+  }
+  
+  const response = await fetch(`${BASE_URL}/stocks/${code}/quote?${params}`, {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`
+    }
+  });
+  return response.json();
+}
+```
+
+## 数据更新频率
+
+- **实时行情**: 3 秒更新一次
+- **历史数据**: 每日更新
+- **财务数据**: 季度更新 

@@ -1,0 +1,78 @@
+---
+title: API 参考
+description: Signal Feed API 接口文档
+---
+
+## API 参考
+
+Signal Feed 提供 RESTful API 接口，支持获取实时和历史金融数据。
+
+### 基础信息
+
+- **Base URL**: `http://localhost:3000/v1` (本地部署)
+- **认证方式**: API Key (在请求头中传递)
+- **数据格式**: JSON
+- **字符编码**: UTF-8
+
+### 认证
+
+所有 API 请求都需要在请求头中包含 API Key：
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+## 接口分类
+
+### 📈 股票数据
+- [股票接口](/signal-feed/api-reference/stocks) - A股股票数据接口
+- 获取股票列表、详情、实时行情等
+
+### 📊 基金数据
+- 基金净值、持仓信息等（开发中）
+
+### 📰 新闻资讯
+- 市场新闻、公告信息等（开发中）
+
+## 错误码
+
+| 错误码 | 说明 |
+|--------|------|
+| 0 | 成功 |
+| 1001 | API Key 无效 |
+| 1002 | 请求频率超限 |
+| 1003 | 参数错误 |
+| 1004 | 数据不存在 |
+| 5000 | 服务器内部错误 |
+
+## 使用示例
+
+### Node.js
+
+```javascript
+// 配置你的 API 地址
+const API_KEY = 'your_api_key';
+const BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000/v1';
+
+// 基础请求函数
+async function apiRequest(endpoint, options = {}) {
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`,
+      'Content-Type': 'application/json',
+      ...options.headers
+    },
+    ...options
+  });
+  return response.json();
+}
+
+// 使用示例
+const stocks = await apiRequest('/stocks/list?market=sh&limit=10');
+```
+
+## 数据更新频率
+
+- **实时行情**: 3 秒更新一次
+- **历史数据**: 每日更新
+- **财务数据**: 季度更新
