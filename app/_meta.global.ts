@@ -1,7 +1,7 @@
 export default {
   "signal-feed": {
     type: "page",
-    title: "信号源"
+    title: "Signal Feed"
   },
   index: {
     type: "page",

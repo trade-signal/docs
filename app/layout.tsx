@@ -50,8 +50,16 @@ const navbar = (
   <Navbar
     logo={
       <>
-        <Image src={logo} alt="Trade Signal" width={24} height={24} />
-        <span className="ml-2 font-bold">Trade Signal</span>
+        <Image
+          src={logo}
+          alt="Trade Signal"
+          width={20}
+          height={20}
+          className="sm:w-6 sm:h-6"
+        />
+        <span className="ml-1 sm:ml-2 font-bold text-sm sm:text-base">
+          Trade Signal
+        </span>
       </>
     }
   />
@@ -60,7 +68,7 @@ const navbar = (
 const search = <Search placeholder="搜索..." />;
 
 const footer = (
-  <footer className="flex justify-center items-center mb-4 h-6 text-sm text-gray-500 dark:text-gray-400">
+  <footer className="flex justify-center items-center mb-4 h-6 text-xs sm:text-sm text-gray-500 dark:text-gray-400 px-2">
     MIT {new Date().getFullYear()} ©{" "}
     <a href="https://github.com/trade-signal" target="_blank">
       Trade Signal
