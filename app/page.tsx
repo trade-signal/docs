@@ -1,4 +1,5 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -20,12 +21,12 @@ export default function Home() {
               智能追踪市场动态，发现潜在投资机会，为您的每一个投资决策提供可靠的数据支撑。
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-start items-center">
-              <a
+              <Link
                 href="/signal-feed"
                 className="px-8 py-4 text-lg font-semibold border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-colors duration-200 rounded-lg cursor-pointer"
               >
                 立即体验
-              </a>
+              </Link>
               <a
                 href="https://github.com/trade-signal"
                 target="_blank"

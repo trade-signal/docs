@@ -1,7 +1,9 @@
-import { Footer, Layout, Navbar } from "nextra-theme-docs";
+import { Layout, Navbar } from "nextra-theme-docs";
 import { Head, Search } from "nextra/components";
 import { getPageMap } from "nextra/page-map";
 import Image from "next/image";
+
+import logo from "../public/logo.svg";
 
 import "./globals.css";
 
@@ -48,7 +50,7 @@ const navbar = (
   <Navbar
     logo={
       <>
-        <Image src="/logo.svg" alt="Trade Signal" width={24} height={24} />
+        <Image src={logo} alt="Trade Signal" width={24} height={24} />
         <span className="ml-2 font-bold">Trade Signal</span>
       </>
     }
@@ -58,13 +60,13 @@ const navbar = (
 const search = <Search placeholder="搜索..." />;
 
 const footer = (
-  <Footer>
+  <footer className="flex justify-center items-center mb-4 h-6 text-sm text-gray-500 dark:text-gray-400">
     MIT {new Date().getFullYear()} ©{" "}
     <a href="https://github.com/trade-signal" target="_blank">
       Trade Signal
     </a>
     .
-  </Footer>
+  </footer>
 );
 
 export default async function RootLayout({ children }) {
@@ -72,7 +74,7 @@ export default async function RootLayout({ children }) {
     <html lang="zh-CN" dir="ltr" suppressHydrationWarning>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href="/logo.svg" />
+        <link rel="icon" href={logo.src} />
       </Head>
       <body>
         <Layout
