@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/* Optional: import Nextra theme styles */
+@import "nextra-theme-docs/style.css"; /* or nextra-theme-blog/style.css */
+
+@variant dark (&:where(.dark *));
+
+/* 直接覆盖具体的颜色值 - 统一使用 emerald-600 绿色 */
+.x\:text-primary-600 {
+  color: #059669 !important; /* emerald-600 */
+}
+.x\:dark\:text-primary-600 {
+  color: #059669 !important; /* emerald-600 */
+}
+
+.x\:bg-primary-100 {
+  background-color: transparent !important; /* 透明 */
+}
