@@ -14,21 +14,24 @@ Signal Feed 提供完整的 A 股股票数据接口，支持实时行情、历�
 **请求**
 
 ```http
-GET /stocks/list
+GET /stocks-a/stocks/list
 ```
 
 **参数**
 
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| `market` | string | 否 | 市场类型：`sh`(上海)、`sz`(深圳)、`all`(全部) |
+| `market` | string | 否 | 市场类型：`sh`(上海)、`sz`(深圳)、`bj`(北京)、`all`(全部) |
 | `page` | integer | 否 | 页码，默认 1 |
-| `limit` | integer | 否 | 每页数量，默认 20，最大 100 |
+| `pageSize` | integer | 否 | 每页数量，默认 20，最大 100 |
+| `sortBy` | string | 否 | 排序字段，默认 `code` |
+| `sortOrder` | string | 否 | 排序顺序，默认 `asc` |
+| `fields` | string | 否 | 返回字段，多个用逗号分隔 |
 
 **示例**
 
 ```bash
-curl -X GET "http://localhost:3000/v1/stocks/list?market=sh&page=1&limit=10" \
+curl -X GET "http://localhost:4000/api/v1/stocks-a/stocks/list?market=sh&page=1&pageSize=10" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -36,21 +39,21 @@ curl -X GET "http://localhost:3000/v1/stocks/list?market=sh&page=1&limit=10" \
 
 ```json
 {
-  "code": 0,
-  "message": "success",
+  "success": true,
   "data": {
     "list": [
       {
-        "code": "000001",
-        "name": "平安银行",
-        "market": "sz",
-        "industry": "银行",
-        "status": "active"
+        "name": "平安银行", // 股票名称
+        "code": "000001", // 股票代码
+        "industry": "银行", // 行业
+        "listingDate": "1970-01-01", // 上市日期
+        "isActive": true, // 是否活跃
+        "isSuspended": false, // 是否停牌
+        "createdAt": "2025-08-03T06:07:26.168Z", // 创建时间
+        "updatedAt": "2025-08-03T06:07:26.168Z" // 更新时间
       }
     ],
-    "total": 100,
-    "page": 1,
-    "limit": 10
+    "total": 5735 // 总数量
   }
 }
 ```
@@ -62,7 +65,7 @@ curl -X GET "http://localhost:3000/v1/stocks/list?market=sh&page=1&limit=10" \
 **请求**
 
 ```http
-GET /stocks/{code}/detail
+GET /stocks-a/stocks/{code}/detail
 ```
 
 **路径参数**
@@ -74,7 +77,7 @@ GET /stocks/{code}/detail
 **示例**
 
 ```bash
-curl -X GET "http://localhost:3000/v1/stocks/000001/detail" \
+curl -X GET "http://localhost:4000/api/v1/stocks-a/stocks/000001/detail" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -82,48 +85,98 @@ curl -X GET "http://localhost:3000/v1/stocks/000001/detail" \
 
 ```json
 {
-  "code": 0,
-  "message": "success",
+  "success": true,
   "data": {
-    "code": "000001",
-    "name": "平安银行",
-    "market": "sz",
-    "industry": "银行",
-    "current_price": 12.34,
-    "change": 0.15,
-    "change_percent": 1.23,
-    "volume": 1234567,
-    "turnover": 15234567.89,
-    "market_cap": 1234567890.12,
-    "pe_ratio": 15.67,
-    "pb_ratio": 1.23,
-    "updated_at": "2024-01-15T10:30:00Z"
+    "name": "平安银行", // 股票名称
+    "code": "000001", // 股票代码
+    "industry": "银行", // 行业
+    "listingDate": "1970-01-01", // 上市日期
+    "isActive": true, // 是否活跃
+    "isSuspended": false, // 是否停牌
+    "createdAt": "2025-08-01T14:12:22.439Z", // 创建时间
+    "updatedAt": "2025-08-01T14:12:22.439Z", // 更新时间
+    "marketId": 0 // 市场ID
   }
 }
 ```
 
-### 获取股票实时行情
+### 获取股票行情
 
-获取指定股票的实时价格数据。
+获取股票的行情数据
 
 **请求**
 
 ```http
-GET /stocks/{code}/quote
+GET /stocks-a/quotes
 ```
 
 **参数**
 
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
+| `market` | string | 否 | 市场类型：`sh`(上海)、`sz`(深圳)、`bj`(北京)、`all`(全部) |
+| `date` | string | 否 | 日期，格式为 YYYY-MM-DD，默认最近一个交易日 |
 | `code` | string | 是 | 股票代码 |
 | `fields` | string | 否 | 返回字段，多个用逗号分隔 |
 
 **示例**
 
 ```bash
-curl -X GET "http://localhost:3000/v1/stocks/000001/quote?fields=price,volume,turnover" \
+curl -X GET "http://localhost:4000/api/v1/stocks-a/quotes?code=000001" \
   -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+**响应**
+
+```json   
+{
+  "success": true,
+  "data": {
+    "date": "2025-08-01", // 日期
+    "list": [
+      {
+        "date": "2025-08-01", // 日期
+        "code": "000001", // 股票代码
+        "name": "平安银行", // 股票名称
+        "newPrice": 12.28, // 最新价格
+        "changeRate": 0.41, // 涨跌幅
+        "upsDowns": 0.05, // 涨跌
+        "volume": 1012187, // 成交量
+        "dealAmount": 1240239179.62, // 成交额
+        "amplitude": 1.47, // 振幅
+        "turnoverRate": 0.52, // 换手率
+        "volumeRatio": 0.75, // 量比
+        "openPrice": 12.24, // 开盘价
+        "highPrice": 12.33, // 最高价
+        "lowPrice": 12.15, // 最低价
+        "preClosePrice": 12.23, // 昨收价
+        "speedIncrease": 0, // 涨速
+        "speedIncrease5": 0, // 5分钟涨速
+        "speedIncrease60": 14.55, // 60分钟涨速
+        "speedIncreaseAll": 8.29, // 总涨速
+        "dtsyl": 4.23, // 动态市盈率
+        "pe": 5.35, // 市盈率
+        "basicEps": 0.726376349, // 基本每股收益
+        "bvps": 22.113566245, // 每股净资产
+        "perCapitalReserve": 4.158988983491, // 每股公积金
+        "perUnassignProfit": 12.810321834601, // 每股未分配利润
+        "roeWeight": 2.8, // 净资产收益率
+        "debtAssetRatio": 91.2404908532, // 资产负债率
+        "totalOperateIncome": 33709000000, // 总营业收入
+        "toiYoyRatio": -13.0539076606, // 营业收入同比增长
+        "parentNetprofit": 14096000000, // 母公司净利润
+        "netprofitYoyRatio": -5.598714170908, // 净利润同比增长
+        "totalShares": 19405918198, // 总股本
+        "freeShares": 19405571850, // 流通股本
+        "totalMarketCap": 238304675471, // 总市值
+        "freeMarketCap": 238300422318, // 流通市值
+        "createdAt": "2025-08-01T14:12:26.166Z", // 创建时间
+        "updatedAt": "2025-08-01T14:12:26.166Z" // 更新时间
+      } 
+    ],
+    "total": 5735
+  }
+}
 ```
 
 ## 使用示例
@@ -133,7 +186,7 @@ curl -X GET "http://localhost:3000/v1/stocks/000001/quote?fields=price,volume,tu
 ```javascript
 // 配置你的 API 地址
 const API_KEY = 'your_api_key';
-const BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000/v1';
+const BASE_URL = process.env.API_BASE_URL || 'http://localhost:4000/v1';
 
 // 获取股票列表
 async function getStockList(market = 'all', page = 1, limit = 20) {
@@ -143,7 +196,7 @@ async function getStockList(market = 'all', page = 1, limit = 20) {
     limit: limit.toString()
   });
   
-  const response = await fetch(`${BASE_URL}/stocks/list?${params}`, {
+  const response = await fetch(`${BASE_URL}/stocks-a/stocks/list?${params}`, {
     headers: {
       'Authorization': `Bearer ${API_KEY}`
     }
@@ -153,7 +206,7 @@ async function getStockList(market = 'all', page = 1, limit = 20) {
 
 // 获取股票详情
 async function getStockDetail(code) {
-  const response = await fetch(`${BASE_URL}/stocks/${code}/detail`, {
+  const response = await fetch(`${BASE_URL}/stocks-a/stocks/${code}/detail`, {
     headers: {
       'Authorization': `Bearer ${API_KEY}`
     }
@@ -161,14 +214,14 @@ async function getStockDetail(code) {
   return response.json();
 }
 
-// 获取股票实时行情
+// 获取股票行情
 async function getStockQuote(code, fields) {
   const params = new URLSearchParams();
   if (fields) {
     params.append('fields', fields);
   }
   
-  const response = await fetch(`${BASE_URL}/stocks/${code}/quote?${params}`, {
+  const response = await fetch(`${BASE_URL}/stocks-a/quotes?${params}`, {
     headers: {
       'Authorization': `Bearer ${API_KEY}`
     }
@@ -179,6 +232,10 @@ async function getStockQuote(code, fields) {
 
 ## 数据更新频率
 
-- **实时行情**: 3 秒更新一次
-- **历史数据**: 每日更新
-- **财务数据**: 季度更新 
+- **实时行情**: 日度更新（收盘后 4 点）
+- **股票数据**: 月度更新（1号）
+- **财务数据**: 季度更新（3月、6月、9月、12月）
+
+## 注意事项
+
+该文档维护可能落后于实际数据更新，请以实际数据为准。

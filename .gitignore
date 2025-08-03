@@ -30,3 +30,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# pagefind
+_pagefind/

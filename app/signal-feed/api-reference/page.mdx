@@ -9,7 +9,7 @@ Signal Feed 提供 RESTful API 接口，支持获取实时和历史金融数据�
 
 ### 基础信息
 
-- **Base URL**: `http://localhost:3000/v1` (本地部署)
+- **Base URL**: `http://localhost:4000/api/v1` (本地部署)
 - **认证方式**: API Key (在请求头中传递)
 - **数据格式**: JSON
 - **字符编码**: UTF-8
@@ -52,7 +52,7 @@ Authorization: Bearer YOUR_API_KEY
 ```javascript
 // 配置你的 API 地址
 const API_KEY = 'your_api_key';
-const BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000/v1';
+const BASE_URL = process.env.API_BASE_URL || 'http://localhost:4000/api/v1';
 
 // 基础请求函数
 async function apiRequest(endpoint, options = {}) {
@@ -68,11 +68,10 @@ async function apiRequest(endpoint, options = {}) {
 }
 
 // 使用示例
-const stocks = await apiRequest('/stocks/list?market=sh&limit=10');
+const stocks = await apiRequest('/stocks-a/list?market=sh&page=1&pageSize=10');
 ```
 
 ## 数据更新频率
 
-- **实时行情**: 3 秒更新一次
-- **历史数据**: 每日更新
-- **财务数据**: 季度更新
+- **股票数据**: 月度更新（1号）
+- **实时行情**: 日度更新（收盘后 4 点）
